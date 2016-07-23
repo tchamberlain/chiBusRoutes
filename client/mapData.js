@@ -1,20 +1,3 @@
- 
-
- //  testing ajax call
-  $.ajax({
-    url: 'http://localhost:8000/stops',
-    type: 'GET',
-    contentType: 'application/json',
-    success: function (data) {
-      // Trigger a fetch to update the messages, pass true to animate
-     console.log('YO WE GOT DATA', data)
-    },
-    error: function (data) {
-      console.error('chatterbox: Failed to send message');
-    }
-  });
-  // testing ajax call
-
 (function() {
 
   var width = 700,
@@ -87,6 +70,22 @@
       .defer(d3.csv, "https://static01.nyt.com/newsgraphics/2012/12/31/chicago-homicides/acae5cd811293b922d4a1c54968858f8c1a379dc/homicides.csv")
       .defer(d3.tsv, "https://static01.nyt.com/newsgraphics/2012/12/31/chicago-homicides/acae5cd811293b922d4a1c54968858f8c1a379dc/block-groups.tsv")
       .await(ready);
+
+
+  // TEST AJAX CALL
+  $.ajax({
+    url: 'http://localhost:8000/stops',
+    type: 'GET',
+    contentType: 'application/json',
+    success: function (data) {
+      // Trigger a fetch to update the messages, pass true to animate
+     console.log('data:', data)
+    },
+    error: function (data) {
+      console.error('chatterbox: Failed to send message');
+    }
+  });
+  // TEST AJAX CALL
 
   function ready(error, chicago, homicides, blocks) {
     var blocksById = {},
