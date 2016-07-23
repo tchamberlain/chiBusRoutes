@@ -1,0 +1,24 @@
+_________________
+_____steps_______
+_________________
+
+- current concerns:
+  - looking for many to many handling, how best do in sqlite?
+
+
+
+
+_________________
+_________________
+_________________
+- which bus route has the most stops?
+- which bus stop is on the most bus routes?
+
+visual ideas:
+- make a chi map, with clickable pop-up info about the route, d3 bubbles at each point and lines for each stop
+- or each point is just the stop, and make the d3 bubbles change color according to what you choose ( most boardings, most alightings, )
+- have selection where you can show different routes, with the default being all routes
+- on hover, will show stop name and the routes passing thru that stop
+
+- for now, will show all routes
+- if time, build out node api call to get a specific route
