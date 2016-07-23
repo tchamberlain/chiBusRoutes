@@ -17,7 +17,7 @@ function storeBusRouteData( data ){
       cross_street : currStop.cross_street,
       on_street : currStop.on_street, 
       lat : currStop.location.coordinates[1],
-      lng : currStop.location.coordinates[1],
+      lng : currStop.location.coordinates[0],
       stop_id : currStop.stop_id
     } )
     

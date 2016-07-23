@@ -13,13 +13,6 @@
       .size([width, height])
       .radius(6);
 
-  var specials = {
-    "AUSTIN": 1,
-    "GREATER GRAND CROSSING": 1,
-    "HYDE PARK": 1,
-    "LINCOLN PARK": 1
-  };
-
   var customLabels = {
     "ARMOUR SQUARE": {offset: [0,-10]},
     "AUSTIN": {offset: [8,0]},
@@ -67,37 +60,44 @@
 
   queue()
       .defer(d3.json, "https://static01.nyt.com/newsgraphics/2012/12/31/chicago-homicides/acae5cd811293b922d4a1c54968858f8c1a379dc/chicago.json")
-      .defer(d3.csv, "https://static01.nyt.com/newsgraphics/2012/12/31/chicago-homicides/acae5cd811293b922d4a1c54968858f8c1a379dc/homicides.csv")
+      // .defer(d3.csv, "https://static01.nyt.com/newsgraphics/2012/12/31/chicago-homicides/acae5cd811293b922d4a1c54968858f8c1a379dc/homicides.csv")
       .defer(d3.tsv, "https://static01.nyt.com/newsgraphics/2012/12/31/chicago-homicides/acae5cd811293b922d4a1c54968858f8c1a379dc/block-groups.tsv")
-      .await(ready);
+      .await(getData);
 
 
   // TEST AJAX CALL
-  $.ajax({
-    url: 'http://localhost:8000/stops',
-    type: 'GET',
-    contentType: 'application/json',
-    success: function (data) {
-      // Trigger a fetch to update the messages, pass true to animate
-     console.log('data:', data)
-    },
-    error: function (data) {
-      console.error('chatterbox: Failed to send message');
-    }
-  });
+  function getData( error, chicago, blocks ){
+    return $.ajax({
+      url: 'http://localhost:8000/stops',
+      type: 'GET',
+      contentType: 'application/json',
+      success: function (data) {
+       console.log('data:', data);
+       ready( error, chicago, blocks, data )
+      },
+      error: function (data) {
+        console.error('An error retrieving route data occured');
+      }
+    });
+  }
   // TEST AJAX CALL
 
-  function ready(error, chicago, homicides, blocks) {
+  function ready(error, chicago, blocks, data) {
+    console.log('here it isdata',data);
     var blocksById = {},
         blockGroups = topojson.object(chicago, chicago.objects.blockGroups),
         communityAreas = topojson.object(chicago, chicago.objects.communityAreas);
         console.log(chicago.objects.communityAreas);
 
     blocks.forEach(function(d) { blocksById[d.id] = d; });
+    data = data;
 
-    homicides.forEach(function(d) {
-      var p = projection([+d.longitude, +d.latitude]);
-      d[0] = p[0], d[1] = p[1];
+
+    data.forEach(function(d) {
+      var p = projection([+d.lng, +d.lat]);
+     // d[0] = p[0], d[1] = p[1];
+      d['0'] =  p[0];
+      d['1'] =  p[1];
     });
 
     svg.insert("defs", "*").append("clipPath")
@@ -139,18 +139,27 @@
         .attr("class", "g-district-outer-boundary")
         .attr("d", path);
 
-    svg.append("path")
-        .datum({type: "GeometryCollection", geometries: communityAreas.geometries.filter(function(d) { return d.properties.name in specials; })})
-        .attr("class", "g-district-special")
-        .attr("d", path);
+    length = 600,
+       color = d3.scale.linear().domain([1,length])
+         .interpolate(d3.interpolateHcl)
+         .range([d3.rgb("#007AFF"), d3.rgb(128,128,128)]);
+
 
     var homicide = svg.append("g")
         .attr("class", "g-homicide")
       .selectAll("circle")
-        .data(hexbin(homicides).sort(function(a, b) { return b.length - a.length; }))
-      .enter().append("circle")
-        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-        .attr("r", function(d) { return radius(d.length); });
+      .data(data).enter()
+      .append("circle")
+      .attr("cx", function (d) {  return d['0']; })
+      .attr("cy", function (d) { return d['1']; })
+      //.attr("r",function (d) { return d.boardings/200; }) // change size based on boardings
+      .attr("r",function (d) { return 2; })
+      .style("stroke", "white") 
+      .style("stroke-width", .3)
+      .attr("fill",function (d) { 
+        // set base color
+        c = d3.hsl('pink');
+        return c.darker(d.boardings/190); })
 
     var districtLabel = svg.selectAll(".g-district-label")
         .data(communityAreas.geometries.filter(function(d) {
@@ -190,7 +199,7 @@
     homicideLegend.append("text")
         .attr("y", -16)
         .style("font-weight", "bold")
-        .text("Homicides, 2001-2012");
+        .text("data, 2001-2012");
 
     var homicideKey = homicideLegend.selectAll(".g-key")
         .data([30, 10, 1])
@@ -242,6 +251,7 @@
         .attr("y", 4)
         .attr("dy", ".35em")
         .text(function(d) { return "Majority " + d; });
+
   }
 
   })()

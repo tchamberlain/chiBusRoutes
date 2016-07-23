@@ -1,5 +1,5 @@
 var Sequelize = require( 'sequelize' );
-var db = new Sequelize( 'chiBusRoutes', null, null, {
+var db = new Sequelize( 'test1', null, null, {
   dialect: 'sqlite',
 
   define: {
@@ -7,7 +7,7 @@ var db = new Sequelize( 'chiBusRoutes', null, null, {
     timestamps: false
   },
 
-  storage: './server/busRouteData/chiBusRoutes.sqlite'
+  storage: './server/busRouteData/busRouteData.sqlite'
 });
 
 module.exports = db;
