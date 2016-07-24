@@ -1,17 +1,14 @@
 (function() {
 
   var width = 700,
-      height = 868;
+      height = 868,
+      centered;
 
   var projection = d3.geo.albers()
       .rotate([87.73, 0])
       .center([0, 42.0433])
-      .scale(120000)
+      .scale(180000)
       .translate([width / 2, 0]);
-
-  var hexbin = d3.hexbin()
-      .size([width, height])
-      .radius(6);
 
   var customLabels = {
     "ARMOUR SQUARE": {offset: [0,-10]},
@@ -32,12 +29,33 @@
     "WEST PULLMAN": {offset: [0,-5]}
   };
 
-  var leaderLines = [
-    {label: "austin", d:"M 248 314 L 280 314"},
-    {label: "lincoln", d:"M 504 254 L 554 254"},
-    {label: "grand crossing", d:"M 286 610 L 490 610"},
-    {label: "hyde park", d:"M 583 525 L 623 525 L 623 490"}
-  ];
+  //**** ATTEMPTING TO ADD CLICK ZOOM
+  function clicked(d) {
+    var x, y, k;
+    console.log('are we here');
+
+    if (d && centered !== d) {
+      var centroid = path.centroid(d);
+      x = centroid[0];
+      y = centroid[1];
+      k = 4;
+      centered = d;
+    } else {
+      x = width / 2;
+      y = height / 2;
+      k = 1;
+      centered = null;
+    }
+
+    svg.selectAll("path")
+        .classed("active", centered && function(d) { return d === centered; });
+
+    svg.transition()
+        .duration(750)
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+        .style("stroke-width", 1.5 / k + "px");
+  }
+  // ATTEMPTING TO ADD CLICK ZOOM 
 
 
 
@@ -60,7 +78,6 @@
 
   queue()
       .defer(d3.json, "https://static01.nyt.com/newsgraphics/2012/12/31/chicago-homicides/acae5cd811293b922d4a1c54968858f8c1a379dc/chicago.json")
-      // .defer(d3.csv, "https://static01.nyt.com/newsgraphics/2012/12/31/chicago-homicides/acae5cd811293b922d4a1c54968858f8c1a379dc/homicides.csv")
       .defer(d3.tsv, "https://static01.nyt.com/newsgraphics/2012/12/31/chicago-homicides/acae5cd811293b922d4a1c54968858f8c1a379dc/block-groups.tsv")
       .await(getData);
 
@@ -72,7 +89,6 @@
       type: 'GET',
       contentType: 'application/json',
       success: function (data) {
-       console.log('data:', data);
        ready( error, chicago, blocks, data )
       },
       error: function (data) {
@@ -83,11 +99,9 @@
   // TEST AJAX CALL
 
   function ready(error, chicago, blocks, data) {
-    console.log('here it isdata',data);
     var blocksById = {},
         blockGroups = topojson.object(chicago, chicago.objects.blockGroups),
         communityAreas = topojson.object(chicago, chicago.objects.communityAreas);
-        console.log(chicago.objects.communityAreas);
 
     blocks.forEach(function(d) { blocksById[d.id] = d; });
     data = data;
@@ -95,7 +109,6 @@
 
     data.forEach(function(d) {
       var p = projection([+d.lng, +d.lat]);
-     // d[0] = p[0], d[1] = p[1];
       d['0'] =  p[0];
       d['1'] =  p[1];
     });
@@ -126,8 +139,10 @@
             })
           };
         })
-        .style("fill", function(d) { return 'white'; })
-        .attr("d", path);
+        .attr("fill", function(d) { return "white"; })
+        .attr("d", path)
+        .on("click", clicked);
+;
 
     svg.append("path")
         .datum(topojson.mesh(chicago, chicago.objects.communityAreas, function(a, b) { return a !== b; }))
@@ -139,11 +154,6 @@
         .attr("class", "g-district-outer-boundary")
         .attr("d", path);
 
-    length = 600,
-       color = d3.scale.linear().domain([1,length])
-         .interpolate(d3.interpolateHcl)
-         .range([d3.rgb("#007AFF"), d3.rgb(128,128,128)]);
-
 
     var homicide = svg.append("g")
         .attr("class", "g-homicide")
@@ -152,45 +162,43 @@
       .append("circle")
       .attr("cx", function (d) {  return d['0']; })
       .attr("cy", function (d) { return d['1']; })
-      //.attr("r",function (d) { return d.boardings/200; }) // change size based on boardings
-      .attr("r",function (d) { return 2; })
-      .style("stroke", "white") 
-      .style("stroke-width", .3)
+      .attr("r",function (d) { return d.boardings/200; }) // change size based on boardings
+      .attr("r",function (d) { return 2.2; })
       .attr("fill",function (d) { 
         // set base color
         c = d3.hsl('pink');
-        return c.darker(d.boardings/190); })
+        c.opacity = 0.8;
+        return c.darker(d.boardings/200); })
 
-    var districtLabel = svg.selectAll(".g-district-label")
-        .data(communityAreas.geometries.filter(function(d) {
-          var l = customLabels[d.properties.name] || {};
-          d.properties.hide = l.hide || false;
-          d.properties.dx = l.offset ? l.offset[0] : 0;
-          d.properties.dy = l.offset ? l.offset[1] : 0;
-          if (l.name) d.properties.name = l.name;
-          return !d.properties.hide;
-        }))
-      .enter().append("g")
-        .attr("class", "g-district-label")
-        .attr("transform", function(d) {
-          var c = path.centroid(d);
-          return "translate(" + [c[0] + d.properties.dx, c[1] + d.properties.dy] + ")";
-        });
+     var districtLabel = svg.selectAll(".g-district-label")
+         .data(communityAreas.geometries.filter(function(d) {
+           var l = customLabels[d.properties.name] || {};
+           d.properties.hide = l.hide || false;
+           d.properties.dx = l.offset ? l.offset[0] : 0;
+           d.properties.dy = l.offset ? l.offset[1] : 0;
+           if (l.name) d.properties.name = l.name;
+           return !d.properties.hide;
+         }))
+       .enter().append("g")
+         .attr("class", "g-district-label")
+         .attr("transform", function(d) {
+           var c = path.centroid(d);
+           return "translate(" + [c[0] + d.properties.dx, c[1] + d.properties.dy] + ")";
+         });
 
-    districtLabel.selectAll("text")
-        .data(function(d) {
-          var words = d.properties.name.split(" ");
-          return words.map(function(d) { return {word: d, count: words.length}; });
-        })
-      .enter().append("text")
-        .attr("class", "g-district-name")
-        .attr("dy", function(d, i) { return (i - d.count / 2 + .7) + "em"; })
-        .text(function(d) { return d.word; });
-
-    svg.selectAll(".g-district-leader")
-      .data(leaderLines).enter().append("path")
-      .attr("class", "g-district-leader")
-      .attr("d", function(d){ return d.d; });
+   districtLabel.selectAll("text")
+       .data(function(d) {
+         var words = d.properties.name.split(" ");
+         return words.map(function(d) { return {word: d, count: words.length}; });
+       })
+     .enter().append("text")
+       .attr("class", "g-district-name")
+       .attr("dy", function(d, i) { return (i - d.count / 2 + .7) + "em"; })
+       .attr("fill", "black") 
+       .attr("stroke",  '#2F4F4F')
+       .attr("stroke-width", .6) 
+ 
+       .text(function(d) { return d.word; });
 
     var homicideLegend = svg.append("g")
         .attr("transform", "translate(" + (width - 125) + ",58)")
@@ -224,33 +232,6 @@
         return "translate(" + x1 + ",0)";
       };
     })());
-
-    var raceLegend = svg.append("g")
-        .attr("transform", "translate(" + (width - 125) + ",106)")
-        .attr("class", "g-legend");
-
-    raceLegend.append("text")
-        .attr("y", -10)
-        .style("font-weight", "bold")
-        .text("Race");
-
-    var raceKey = raceLegend.selectAll(".g-key")
-        .data(race.domain())
-      .enter().append("g")
-        .attr("class", "g-key")
-        .attr("transform", function(d, i) { return "translate(0," + (i * 19) + ")"; });
-
-    raceKey.append("rect")
-        .attr("class", "g-block")
-        .attr("width", 8)
-        .attr("height", 8)
-        .style("fill", 'race');
-
-    raceKey.append("text")
-        .attr("x", 16)
-        .attr("y", 4)
-        .attr("dy", ".35em")
-        .text(function(d) { return "Majority " + d; });
 
   }
 

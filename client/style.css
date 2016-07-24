@@ -1,5 +1,4 @@
 
-  @import url(//typeface.nytimes.com/k/tub6vtu-d.css);
 
   #interactiveFooter {
     border-top: 1px solid #ddd;
@@ -85,9 +84,10 @@
   }
 
   .g-district-label {
-    font-size: 9px;
+    font-size: 11px;
     text-anchor: middle;
-    text-transform: uppercase;
+    text-transform: lowercase;
+    font-family: Verdana;
   }
 
   .g-district-id {
