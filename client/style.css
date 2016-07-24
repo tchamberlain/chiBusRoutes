@@ -6,11 +6,6 @@
     padding-top: 12px;
   }
 
-  .storyHeader h1,
-  .g-graphic {
-    font-family: "nyt-franklin-1", sans-serif;
-  }
-
   .storyHeader h1 {
     font-weight: 300;
     font-size: 32px !important;
@@ -86,8 +81,8 @@
   .g-district-label {
     font-size: 11px;
     text-anchor: middle;
-    text-transform: lowercase;
-    font-family: Verdana;
+    text-transform: uppercase;
+    font-family: 'Trebuchet MS';
   }
 
   .g-district-id {

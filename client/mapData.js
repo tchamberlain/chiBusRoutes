@@ -1,13 +1,14 @@
 (function() {
 
-  var width = 700,
+  var width = 800,
       height = 868,
-      centered;
+      hoveredNode = null;
+
 
   var projection = d3.geo.albers()
       .rotate([87.73, 0])
       .center([0, 42.0433])
-      .scale(180000)
+      .scale(140000)
       .translate([width / 2, 0]);
 
   var customLabels = {
@@ -122,22 +123,6 @@
         .attr("class", "g-district-outer-boundary")
         .attr("d", path);
 
-
-    var homicide = svg.append("g")
-        .attr("class", "g-homicide")
-      .selectAll("circle")
-      .data(data).enter()
-      .append("circle")
-      .attr("cx", function (d) {  return d['0']; })
-      .attr("cy", function (d) { return d['1']; })
-      .attr("r",function (d) { return d.boardings/200; }) // change size based on boardings
-      .attr("r",function (d) { return 2.2; })
-      .attr("fill",function (d) { 
-        // set base color
-        c = d3.hsl('pink');
-        c.opacity = 0.8;
-        return c.darker(d.boardings/200); })
-
      var districtLabel = svg.selectAll(".g-district-label")
          .data(communityAreas.geometries.filter(function(d) {
            var l = customLabels[d.properties.name] || {};
@@ -163,44 +148,68 @@
        .attr("class", "g-district-name")
        .attr("dy", function(d, i) { return (i - d.count / 2 + .7) + "em"; })
        .attr("fill", "black") 
-       .attr("stroke",  '#2F4F4F')
-       .attr("stroke-width", .6) 
- 
+       .style("font-weight", "bold")
+
        .text(function(d) { return d.word; });
+
+    var homicide = svg.append("g")
+        .attr("class", "g-homicide")
+      .selectAll("circle")
+      .data(data).enter()
+      .append("circle")
+      .attr("cx", function (d) {  return d['0']; })
+      .attr("cy", function (d) { return d['1']; })
+      .attr("r",function (d) { return d.boardings/200; }) // change size based on boardings
+      .attr("r",function (d) { return 2.2; })
+      .attr("fill",function (d) { 
+        // set base color
+        c = d3.hsl('pink');
+        c.opacity = 0.8;
+        return c.darker(d.boardings/300); })
+      .on('mouseover', function(d){
+          
+          svg.selectAll(".alightingsText")
+          .text('Alightings: ' + d.alightings);
+         
+          svg.selectAll(".boardingsText")
+          .text('Boardings: ' + d.boardings);
+
+          d3.select(this).attr("r", 8).attr("stroke","black").style("fill", "white");
+      })
+      .on("mouseout", function(d) {
+        d3.select(this).attr("r", 2.2)
+        .attr("stroke",null)
+        .style("fill", function (d) { 
+        // set base color
+        c = d3.hsl('pink');
+        c.opacity = 0.8;
+        return c.darker(d.boardings/200); });
+      });
+
 
     var homicideLegend = svg.append("g")
         .attr("transform", "translate(" + (width - 125) + ",58)")
         .attr("class", "g-legend");
 
+    homicideLegend.append("rect")
+    .attr("transform", "translate(0,-100)")
+    .attr("width", 100)
+    .attr("height", 200)
+    .attr("fill", '#F5F5F5')
+    .attr("border",1);
+
+
     homicideLegend.append("text")
+        .attr("class", "alightingsText")
         .attr("y", -16)
+        .attr("fill", "blue")
         .style("font-weight", "bold")
-        .text("data, 2001-2012");
 
-    var homicideKey = homicideLegend.selectAll(".g-key")
-        .data([30, 10, 1])
-      .enter().append("g")
-        .attr("class", "g-key");
-
-    homicideKey.append("circle")
-        .attr("class", "g-homicide")
-        .attr("cx", function(d) { return radius(d); })
-        .attr("r", radius);
-
-    homicideKey.append("text")
-        .attr("x", function(d) { return 2 * radius(d) + 5; })
-        .attr("dy", ".35em")
-        .text(function(d) { return d; });
-
-    homicideKey.attr("transform", (function() {
-      var x0 = 0;
-      return function(d) {
-        var x1 = x0;
-        x0 += this.getBBox().width + 10;
-        return "translate(" + x1 + ",0)";
-      };
-    })());
-
+    homicideLegend.append("text")
+      .attr("class", "boardingsText")
+      .attr("y", 20)
+      .attr("fill", "blue")
+      .style("font-weight", "bold")
   }
 
   })()
