@@ -1,42 +1,51 @@
 var db = require( '../config/db' );
 var request = require('request');
 var Stop = require( '../stops/stops' );
-var Route_Stop = require( '../route_stop/route_stop' );
+var Route = require( '../routes/routes' );
 
 getBusRouteData();
 
-function storeBusRouteData( data ){
-  for(var i = 0; i < data.length; i++){
-    console.log(i);
-    var currStop = data[i];
 
-    // create the STOP table entry
-    Stop.create( {
-      alightings : currStop.alightings,
-      boardings : currStop.boardings,
-      cross_street : currStop.cross_street,
-      on_street : currStop.on_street, 
-      lat : currStop.location.coordinates[1],
-      lng : currStop.location.coordinates[0],
-      stop_id : currStop.stop_id
-    } )
-    
+
+
+function storeBusRouteData( data ){
+  var i = 0;
+  for(var i = 0; i<data.length; i++){
+      createBusStopEntry(data[i]);
+  }
+}
+
+function createBusStopEntry(currStop){
+  console.log(' ****************** stop, ',currStop.stop_id);
+  console.log('------>all routes', currStop.routes);
+
+  // create the STOP table entry
+  Stop.create( {
+    alightings : currStop.alightings,
+    boardings : currStop.boardings,
+    cross_street : currStop.cross_street,
+    on_street : currStop.on_street, 
+    lat : currStop.location.coordinates[1],
+    lng : currStop.location.coordinates[0],
+    stop : currStop.stop_id
+  } )
+  .then(function(stop){
     // if there's only one route, its not in an arr
     // for consistency, we'll make it into an arr
     if( !Array.isArray(currStop.routes) ){
       currStop.routes = [ currStop.routes ];
     }
-
-    // create ROUTE_STOP table entry
+    // create ROUTE table entry
     for( var j = 0; j < currStop.routes.length; j ++ ){
-      console.log(currStop.stop_id, currStop.routes[j]);
-      Route_Stop.create( {
-        route_id : currStop.routes[j],
-        stop_id : currStop.stop_id
+      console.log('^^^^^^^^^ loop j, route', j , currStop.routes[j]);
+      Route.create( {
+        route : currStop.routes[j],
       } )
+      .then(function( route ){
+        stop.addRoute(route);
+      });
     }
-
-  }
+  });    
 }
 
 function getBusRouteData(){

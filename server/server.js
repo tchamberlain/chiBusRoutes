@@ -3,9 +3,8 @@ var db = require( './config/db' );
 var app = express();
 
 var http = require( 'http' ).Server( app );
-var User = require( './users/users' );
 var Stop = require( './stops/stops' );
-var Route_Stop = require( './route_stop/route_stop' );
+var Route = require( './routes/routes' );
 
 var PORT = 8000;
 

@@ -1,14 +1,15 @@
 var db = require( '../config/db' );
 var Sequelize = require( 'sequelize' );
+var Route = require( '../routes/routes' );
 
-var Stop = db.define( 'stops', {
+var Stop = db.define( 'Stop', {
   alightings : Sequelize.INTEGER,
   boardings : Sequelize.INTEGER,
   cross_street : Sequelize.STRING,
   on_street : Sequelize.STRING, 
   lat : Sequelize.INTEGER,
   lng : Sequelize.INTEGER,
-  stop_id : Sequelize.INTEGER
+  stop : Sequelize.INTEGER
 } );
 
 Stop.sync().then( function() {
@@ -18,4 +19,8 @@ Stop.sync().then( function() {
   console.error( err );
 } );
 
+Stop.belongsToMany(Route,  {through: 'Route_Stop'});
+Route.belongsToMany(Stop, {through: 'Route_Stop'});
+
+db.sync()
 module.exports = Stop;
