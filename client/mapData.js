@@ -29,36 +29,6 @@
     "WEST PULLMAN": {offset: [0,-5]}
   };
 
-  //**** ATTEMPTING TO ADD CLICK ZOOM
-  function clicked(d) {
-    var x, y, k;
-    console.log('are we here');
-
-    if (d && centered !== d) {
-      var centroid = path.centroid(d);
-      x = centroid[0];
-      y = centroid[1];
-      k = 4;
-      centered = d;
-    } else {
-      x = width / 2;
-      y = height / 2;
-      k = 1;
-      centered = null;
-    }
-
-    svg.selectAll("path")
-        .classed("active", centered && function(d) { return d === centered; });
-
-    svg.transition()
-        .duration(750)
-        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
-        .style("stroke-width", 1.5 / k + "px");
-  }
-  // ATTEMPTING TO ADD CLICK ZOOM 
-
-
-
   var race = d3.scale.ordinal()
       .domain(["white", "black", "other"])
       .range(["#FFCC33", "#33CCFF", "#60B260"].map(function(d) { d = d3.hcl(d); d.c /= 2; return d;}));
@@ -140,9 +110,7 @@
           };
         })
         .attr("fill", function(d) { return "white"; })
-        .attr("d", path)
-        .on("click", clicked);
-;
+        .attr("d", path);
 
     svg.append("path")
         .datum(topojson.mesh(chicago, chicago.objects.communityAreas, function(a, b) { return a !== b; }))
