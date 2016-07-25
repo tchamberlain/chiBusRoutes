@@ -181,3 +181,27 @@ h1 {
   font-size: 16px;
   text-align: right;
 }
+
+
+
+/* for bar chart*/
+.axis path,
+.axis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+.axis text {
+  font-family: sans-serif;
+  font-size: 11px;
+}
+
+rect {
+  -moz-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+rect:hover{
+  fill: gray;
+}

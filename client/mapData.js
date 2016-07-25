@@ -198,31 +198,31 @@
         .attr("class", "g-legend");
 
     infoLegend.append("rect")
-    .attr("transform", "translate(0,-100)")
-    .attr("width", 500)
-    .attr("height", 150)
-    .attr("fill", '#F5F5F5')
-    .attr("border",1);
+      .attr("transform", "translate(0,-100)")
+      .attr("width", 500)
+      .attr("height", 150)
+      .attr("fill", '#F5F5F5')
+      .attr("border",1);
 
     infoLegend.append("text")
-    .attr("class", "streetsText")
-    .attr("y", -40)
-    .attr("x", 8)
+      .attr("class", "streetsText")
+      .attr("y", -40)
+      .attr("x", 8)
 
 
     infoLegend.append("text")
-        .attr("class", "alightingsText")
-        .attr("y", -20)
-        .attr("x", 8)
-        .attr("fill", "gray")
-        .style("font-weight", "bold")
-
-    infoLegend.append("text")
-      .attr("class", "boardingsText")
-      .attr("y", 0)
+      .attr("class", "alightingsText")
+      .attr("y", -20)
       .attr("x", 8)
       .attr("fill", "gray")
       .style("font-weight", "bold")
+
+    infoLegend.append("text")
+        .attr("class", "boardingsText")
+        .attr("y", 0)
+        .attr("x", 8)
+        .attr("fill", "gray")
+        .style("font-weight", "bold")
   }
 
   })()
