@@ -47,6 +47,9 @@ function createStopEntry(currStop){
       if(currStop.routes){
         // turn the list into an array
         currStop.routes =  (currStop.routes).split(',');
+        if(currStop.routes.length>13){
+          console.log(cross_street,on_street,currStop.routes,currStop.routes.length);          
+        }
         for(var i = 0; i < currStop.routes.length;  i++){
           createRouteEntry(currStop.routes[i], stop_id);
         }

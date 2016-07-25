@@ -38,11 +38,6 @@ db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='stops'",
 
     // allow foreign keys
     db.run('PRAGMA foreign_keys = ON');
-
-    // foo_id INTEGER,
-    //    bar_id INTEGER,
-    //    FOREIGN KEY(foo_id) REFERENCES foo(id) ON DELETE CASCADE,
-    //    FOREIGN KEY(bar_id) REFERENCES bar(id) ON DELETE CASCADE
     db.run('CREATE TABLE "route_stop" ' +
            '("route_id" INTEGER,' +
            '"stop_id" INTEGER,' +
