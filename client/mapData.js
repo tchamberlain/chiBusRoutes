@@ -63,8 +63,7 @@
       type: 'GET',
       contentType: 'application/json',
       success: function (data) {
-        var routes = data.map(function(x){return x.Routes});
-        console.log(routes);
+        console.log(data);
        ready( error, chicago, blocks, data )
       },
       error: function (data) {
