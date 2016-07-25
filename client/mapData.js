@@ -134,7 +134,6 @@
       .attr("cx", function (d) {  return d['0']; })
       .attr("cy", function (d) { return d['1']; })
       .attr("r",function (d) { return d.boardings/200; }) // change size based on boardings
-      .attr("r",function (d) { return 2.2; })
       .attr("fill",function (d) { 
         // set base color
         c = d3.hsl('pink');
