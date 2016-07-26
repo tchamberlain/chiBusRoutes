@@ -123,6 +123,44 @@
       .style("font-weight", "bold")
   }
 
+// test!!!
+  var homicideLegend = svg.append("g")
+      .attr("transform", "translate(" + (width - 125) + ",58)")
+      .attr("class", "g-legend");
+
+  homicideLegend.append("text")
+      .attr("y", -16)
+      .attr("x", -100)
+      .style("font-weight", "bold")
+      .text("Average weekday boardings by bus stop");
+
+  var homicideKey = homicideLegend.selectAll(".g-key")
+    .data([{space: 0, boardings: 800}, {space: 40, boardings: 2000}, {space: 80, boardings: 3000}])
+    .enter().append("g")
+    .attr("class", "g-key");
+
+  homicideKey.append("circle")
+      .attr("class", "g-homicide")
+      .attr("cx", function(d) { return d.space; })
+      .attr("cy", function(d) { return 3; })
+      .attr("r", setPointSize)
+      .attr("fill", setPointColor);
+
+  homicideKey.append("text")
+      .attr("x", function(d) { return d.space -10 })
+      .attr("dy", ".35em")
+      .attr("y", function(d) { return 30; })
+      .text(function(d) { return d.boardings; });
+
+  // homicideKey.attr("transform", (function() {
+  //   var x0 = 0;
+  //   return function(d) {
+  //     var x1 = x0;
+  //     x0 += this.getBBox().width + 10;
+  //     return "translate(" + x1 + ",0)";
+  //   };
+  // }));
+
   })()
 
 
