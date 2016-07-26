@@ -10,6 +10,7 @@ function getStopsOnRoute( error, chicago, blocks ){
     type: 'GET',
     contentType: 'application/json',
     success: function (data) {
+      // makes sure that we rename the count, to something more intuitive
       data.forEach(function(x){
         x.count = x['COUNT(*)'];
       });
@@ -53,6 +54,11 @@ function getRoutesOnStop( error, chicago, blocks ){
             .domain([0, d3.max(dataset, function(d) {return d.count;})])
             .range([0, h]);
 
+    var yAxis = d3.svg.axis()
+                      .scale(yScale)
+                      .orient("right")
+                      .ticks(5);
+
     var route_name = function(d) {
       return d.route_name;
     };
@@ -60,8 +66,15 @@ function getRoutesOnStop( error, chicago, blocks ){
     //Create SVG element
     var svg = d3.select("body")
           .append("svg")
+          // .attr("transform", "translate(" + 100 + ",100)")
           .attr("width", w)
           .attr("height", h);
+
+    //Create Y axis
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + 975 + ",0)")
+        .call(yAxis);
 
     //Create bars
     svg.selectAll("rect")
@@ -81,152 +94,54 @@ function getRoutesOnStop( error, chicago, blocks ){
        .attr("fill", function(d) {
         return "rgb(0, 0, " + (d.count * 10) + ")";
        })
-
-      //Tooltip
       .on("mouseover", function(d) {
-        //Get this bar's x/y counts, then augment for the tooltip
-        var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
-        var yPosition = parseFloat(d3.select(this).attr("y")) + 14;
-        
-        //Update Tooltip Position & count
-        d3.select("#tooltip")
-          .style("left", xPosition + "px")
-          .style("top", yPosition + "px")
-          .select("#count")
-          .text(d.count);
-        d3.select("#tooltip").classed("hidden", false)
-      })
-      .on("mouseout", function() {
-        //Remove the tooltip
-        d3.select("#tooltip").classed("hidden", true);
-      })  ;
-
-    // Create labels
-    // svg.selectAll("text")
-    //    .data(dataset, route_name)
-    //    .enter()
-    //    .append("text")
-    //    .text(function(d) {
-    //     return d.count;
-    //    })
-    //    .attr("text-anchor", "middle")
-    //    .attr("x", function(d, i) {
-    //     return xScale(i) + xScale.rangeBand() / 2;
-    //    })
-    //    .attr("y", function(d) {
-    //     return h - yScale(d.count) - 100;
-    //    })
-    //    .attr("font-family", "sans-serif") 
-    //    .attr("font-size", "11px")
-    //    .attr("fill", "black");
-       
-    var sortOrder = false;
-    var sortBars = function () {
-        sortOrder = !sortOrder;
-        
-        sortItems = function (a, b) {
-            if (sortOrder) {
-                return a.count - b.count;
-            }
-            return b.count - a.count;
-        };
-
         svg.selectAll("rect")
-            .sort(sortItems)
-            .transition()
-            .delay(function (d, i) {
-            return i * 50;
-        })
-            .duration(1000)
-            .attr("x", function (d, i) {
-            return xScale(i);
-        });
+          .style("opacity", 1)
+       // make infoLegend show this points data
+        svg.selectAll(".routeName")
+          .text('Route Name: ' + d.route_name)
+        svg.selectAll(".busStopsPerRoute")
+          .text('Number of  bus stops on route: ' + d.count )
+      })
+      .on("mouseout", function(d) {
+      });
 
-        svg.selectAll('text')
-            .sort(sortItems)
-            .transition()
-            .delay(function (d, i) {
-            return i * 50;
-        })
-            .duration(1000)
-            .text(function (d) {
-            return d.count;
-        })
-            .attr("text-anchor", "middle")
-            .attr("x", function (d, i) {
-            return xScale(i) + xScale.rangeBand() / 2;
-        })
-            .attr("y", function (d) {
-            return h - yScale(d.count) + 14;
-        });
-    };
-    // Add the onclick callback to the button
-    d3.select("#sort").on("click", sortBars);
-    d3.select("#reset").on("click", reset);
-    function randomSort() {
+      var infoLegend = svg.append("g")
+        .attr("transform", "translate(" + (w - 400) + ",0)")
+        .attr("class", "g-legend")
 
-      
-      svg.selectAll("rect")
-            .sort(sortItems)
-            .transition()
-            .delay(function (d, i) {
-            return i * 50;
-        })
-            .duration(1000)
-            .attr("x", function (d, i) {
-            return xScale(i);
-        });
+      infoLegend.append("rect")
+        .attr("class", "infoLegend")
+        .attr("width", 300)
+        .attr("height",50)
+        .attr("fill", '#F5F5F5')
+        .attr("border",1)
+        .attr("opacity",0)
 
-        // svg.selectAll('text')
-        //     .sort(sortItems)
-        //     .transition()
-        //     .delay(function (d, i) {
-        //     return i * 50;
-        // })
-        //     .duration(1000)
-        //     .text(function (d) {
-        //     return d.count;
-        // })
-        //     .attr("text-anchor", "middle")
-        //     .attr("x", function (d, i) {
-        //     return xScale(i) + xScale.rangeBand() / 2;
-        // })
-        //     .attr("y", function (d) {
-        //     return h - yScale(d.count) + 14;
-        // });
-    }
-    function reset() {
-      svg.selectAll("rect")
-        // .sort(function(a, b){
-        //   return a.route_name - b.route_name;
-        // })
-        .transition()
-            .delay(function (d, i) {
-            return i * 50;
-        })
-            .duration(1000)
-            .attr("x", function (d, i) {
-            return xScale(i);
-        });
-        
-      svg.selectAll('text')
-            .sort(function(a, b){
-          return a.route_name - b.route_name;
-        })
-            .transition()
-            .delay(function (d, i) {
-            return i * 50;
-        })
-            .duration(1000)
-            .text(function (d) {
-            return d.count;
-        })
-            .attr("text-anchor", "middle")
-            .attr("x", function (d, i) {
-            return xScale(i) + xScale.rangeBand() / 2;
-        })
-            .attr("y", function (d) {
-            return h - yScale(d.count) + 14;
-        });
-    };
+        infoLegend.append("text")
+          .attr("class", "routeName")
+          .attr("x", 0)
+          .attr("y", 20)
+          .attr("fill", "black")
+          .style("font-weight", "bold")
+
+        infoLegend.append("text")
+          .attr("class", "busStopsPerRoute")
+          .attr("x", 0)
+          .attr("y", 40)
+          .attr("fill", "black")
+          .style("font-weight", "bold")
+
+      var title = svg.append("g")
+        .attr("transform", "translate(" + 15 + ",0)")
+        .attr("class", "g-title")
+
+        title.append("text")
+          .attr("x", 0)
+          .attr("y", 20)
+          .attr("fill", "black")
+          .style("font-weight", "bold")
+          .text('Number of Bus Stops Per Bus Route');
+
+
   }
