@@ -76,8 +76,8 @@
           .attr("stroke",null)
       });
 
-      // add labels to neighborhoods
-      addDistrictLabels( svg, path );
+    // add labels to neighborhoods
+    addDistrictLabels( svg, path );
 
     // Create the info box that shows boardings and alightings for each point
     createStopInfo( svg, width );
