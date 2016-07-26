@@ -3,7 +3,7 @@ getStopsOnRoute();
 
 function getStopsOnRoute( error, chicago, blocks ){
   return $.ajax({
-    url: 'http://localhost:8000/stops/routes',
+    url: '/stops/routes',
     type: 'GET',
     contentType: 'application/json',
     success: function (data) {

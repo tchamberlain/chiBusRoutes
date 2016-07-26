@@ -28,7 +28,7 @@
 
   function getData( error, chicago, blocks ){
     return $.ajax({
-      url: 'http://localhost:8000/stops',
+      url: '/stops',
       type: 'GET',
       contentType: 'application/json',
       success: function (data) {
