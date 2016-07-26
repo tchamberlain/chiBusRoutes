@@ -12,10 +12,10 @@
       .scale(120000)
       .translate([width / 2, 0]);
 
-  var svg = d3.select(".g-chart").append("svg")
+  var svg = d3.select(".map").append("svg")
       .attr("width", width)
       .attr("height", height)
-    .append("g")
+      .append("g")
       .attr("transform", "translate(-25,-30)");
 
   var path = d3.geo.path()
