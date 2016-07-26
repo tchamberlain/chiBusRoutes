@@ -28,8 +28,12 @@ var customLabels = {
 //**********************
 
 
-var addProjectionsToPoints = function(data){
-
+var addProjectionsToPoints = function( data, projection ){
+  data.forEach(function(d) {
+    var p = projection([+d.lng, +d.lat]);
+    d['0'] =  p[0];
+    d['1'] =  p[1];
+  });
 }
 var addDistrictLabels = function( svg, path ){
 

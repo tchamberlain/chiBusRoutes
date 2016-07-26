@@ -44,13 +44,7 @@
     // set up chicago  base image 
     setUpChicagoBaseImage( svg, path, chicago, blocks );
 
-
-
-    data.forEach(function(d) {
-      var p = projection([+d.lng, +d.lat]);
-      d['0'] =  p[0];
-      d['1'] =  p[1];
-    });
+    addProjectionsToPoints( data, projection );
 
     // add data points to the map
     var dataPoints = svg.append("g")
