@@ -25,17 +25,6 @@ db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='stops'",
       }
     });
 
-    // db.run('CREATE TABLE "routes" ' +
-    //        '("route_id" INTEGER PRIMARY KEY, ' +
-    //        '"route_name" VARCHAR(255)' +
-    //        ')', function(err) {
-    //   if(err !== null) {
-    //     console.log(err);
-    //   } else {
-    //     console.log("SQL Table 'routes' initialized.");
-    //   }
-    // });
-
     // allow foreign keys
     db.run('PRAGMA foreign_keys = ON');
     db.run('CREATE TABLE "route_stop" ' +
