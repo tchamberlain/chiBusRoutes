@@ -73,7 +73,7 @@
             .style("opacity", 1)
             .attr("fill", setPointColor(d));
 
-          // make infoLegend show this points data
+          // make stopInfo show this points data
           svg.selectAll(".alightingsText")
             .text('Alightings: ' + d.alightings);
           svg.selectAll(".streetsText")
@@ -90,32 +90,32 @@
       addDistrictLabels( svg, path );
 
     // Create the legend that shows boardings and alightings for each point
-    var infoLegend = svg.append("g")
-        .attr("class", "infoLegend")
-        .attr("transform", "translate(" + (width - 125) + ",300)")
+    var stopInfo = svg.append("g")
+        .attr("class", "stopInfo")
+        .attr("transform", "translate(" + (width - 200) + ",300)")
         .attr("class", "g-legend")
 
-    infoLegend.append("rect")
+    stopInfo.append("rect")
       .attr("transform", "translate(0,-100)")
-      .attr("width", 800)
+      .attr("width", 200)
       .attr("height", 150)
       .attr("fill", '#F5F5F5')
       .attr("border",1)
       .style("opacity", 0);
 
-    infoLegend.append("text")
+    stopInfo.append("text")
       .attr("class", "streetsText")
       .attr("y", -40)
       .attr("x", 8)
 
-    infoLegend.append("text")
+    stopInfo.append("text")
       .attr("class", "boardingsText")
       .attr("y", -20)
       .attr("x", 8)
       .attr("fill", "white")
       .style("font-weight", "bold")
 
-    infoLegend.append("text")
+    stopInfo.append("text")
       .attr("class", "alightingsText")
       .attr("y", 0)
       .attr("x", 8)
@@ -124,42 +124,33 @@
   }
 
 // test!!!
-  var homicideLegend = svg.append("g")
-      .attr("transform", "translate(" + (width - 125) + ",58)")
+  var boardingsLegend = svg.append("g")
+      .attr("transform", "translate(" + (width - 200) + ",58)")
       .attr("class", "g-legend");
 
-  homicideLegend.append("text")
+  boardingsLegend.append("text")
       .attr("y", -16)
       .attr("x", -100)
       .style("font-weight", "bold")
       .text("Average weekday boardings by bus stop");
 
-  var homicideKey = homicideLegend.selectAll(".g-key")
-    .data([{space: 0, boardings: 800}, {space: 40, boardings: 2000}, {space: 80, boardings: 3000}])
+  var boardingsKey = boardingsLegend.selectAll(".g-key")
+    .data([{space: 90, boardings: 3000}, {space: 20, boardings: 2000}, {space: -50, boardings: 800}])
     .enter().append("g")
     .attr("class", "g-key");
 
-  homicideKey.append("circle")
+  boardingsKey.append("circle")
       .attr("class", "g-homicide")
       .attr("cx", function(d) { return d.space; })
       .attr("cy", function(d) { return 3; })
       .attr("r", setPointSize)
       .attr("fill", setPointColor);
 
-  homicideKey.append("text")
-      .attr("x", function(d) { return d.space -10 })
+  boardingsKey.append("text")
+      .attr("x", function(d) { return d.space - 20 })
       .attr("dy", ".35em")
       .attr("y", function(d) { return 30; })
-      .text(function(d) { return d.boardings; });
-
-  // homicideKey.attr("transform", (function() {
-  //   var x0 = 0;
-  //   return function(d) {
-  //     var x1 = x0;
-  //     x0 += this.getBBox().width + 10;
-  //     return "translate(" + x1 + ",0)";
-  //   };
-  // }));
+      .text(function(d) { return d.boardings + ' ppl'; });
 
   })()
 
