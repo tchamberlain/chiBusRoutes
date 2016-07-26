@@ -12,10 +12,6 @@
       .scale(120000)
       .translate([width / 2, 0]);
 
-  var race = d3.scale.ordinal()
-      .domain(["white", "black", "other"])
-      .range(["#FFCC33", "#33CCFF", "#60B260"].map(function(d) { d = d3.hcl(d); d.c /= 2; return d;}));
-
   var svg = d3.select(".g-chart").append("svg")
       .attr("width", width)
       .attr("height", height)
@@ -46,7 +42,7 @@
   function ready(error, chicago, blocks, data) {
 
     // set up chicago  base image 
-    setUpChicagoBaseImage( svg, path, chicago, blocks, race );
+    setUpChicagoBaseImage( svg, path, chicago, blocks );
 
 
 

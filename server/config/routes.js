@@ -17,7 +17,7 @@ module.exports = function ( app, express ) {
   }
 
   function getRoutesOnStop(req, res){
-    db.all("SELECT *,  COUNT(*) FROM   stops JOIN   route_stop ON route_stop.stop_id = stops.stop_id JOIN   routes on route_stop.route_id = routes.route_id GROUP BY stops.stop_id ORDER BY COUNT(*) ASC;", 
+    db.all("SELECT *,  COUNT(*) FROM   stops JOIN   route_stop ON route_stop.stop_id = stops.stop_id JOIN   routes on route_stop.route_id = routes.route_id GROUP BY stops.stop_id;", 
       function(err,rows){
       if(err){
         res.send( err );

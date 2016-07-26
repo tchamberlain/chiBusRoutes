@@ -66,17 +66,31 @@ var setPointColor = function (d) {
                .interpolate(d3.interpolateHcl)
                // choose one of these color options later
                // .range([d3.rgb(242,242,252), d3.rgb( 0,0,255 )]);
-               .range([d3.rgb(204,229,255), d3.rgb( 153,0,153 )]);
-               // .range([d3.rgb(255,229,204), d3.rgb( 255,102,178 )]);
+               // .range([d3.rgb(204,229,255), d3.rgb( 153,0,153 )]);
+               .range([d3.rgb(153, 204, 255), d3.rgb(153, 153, 255)]);
+               // .range([d3.rgb(153, 179, 255), d3.rgb(51, 51, 255 )]);
 
   return colorScale(Math.floor(d.boardings));
 }
+
+var setChartRectColor = function (d) { 
+  var colorScale = d3.scale.linear().domain([1,180])
+               .interpolate(d3.interpolateHcl)
+               // choose one of these color options later
+               // .range([d3.rgb(242,242,252), d3.rgb( 0,0,255 )]);
+               // .range([d3.rgb(204,229,255), d3.rgb( 153,0,153 )]);
+               .range([d3.rgb(153, 204, 255), d3.rgb(153, 153, 255)]);
+               // .range([d3.rgb(153, 179, 255), d3.rgb(51, 51, 255 )]);
+
+  return colorScale(Math.floor(d.count));
+}
+
 
 var setPointSize = function(d){
   return d.boardings/185; 
 }
 
-var setUpChicagoBaseImage = function(svg, path, chicago, blocks, race){
+var setUpChicagoBaseImage = function(svg, path, chicago, blocks){
   
   var blocksById = {};
   var blockGroups = topojson.object(chicago, chicago.objects.blockGroups);

@@ -12,7 +12,6 @@ function getStopsOnRoute( error, chicago, blocks ){
         x.count = x['COUNT(*)'];
       });
       makeChart( data );
-
     },
     error: function (data) {
       console.error('An error retrieving /stops/routes data occured');
@@ -59,6 +58,7 @@ function getStopsOnRoute( error, chicago, blocks ){
        .data(dataset, route_name)
        .enter()
        .append("rect")
+       .attr('stroke',"white")
        .attr("x", function(d, i) {
         return xScale(i);
        })
@@ -70,7 +70,7 @@ function getStopsOnRoute( error, chicago, blocks ){
         return (yScale(0) - yScale(d.count));
        })
        .attr("fill", function(d) {
-        return "rgb(0, 0, " + (d.count * 10) + ")";
+        return setChartRectColor(d);
        })
       .on("mouseover", function(d) {
         svg.selectAll("rect")
