@@ -75,11 +75,11 @@
 
           // make stopInfo show this points data
           svg.selectAll(".alightingsText")
-            .text('Alightings: ' + d.alightings);
+            .text('Alightings: ' + d.alightings + ' people');
           svg.selectAll(".streetsText")
             .text(d.cross_street + ' & ' +d.on_street);
           svg.selectAll(".boardingsText")
-          .text('Boardings: ' + d.boardings);
+          .text('Boardings: ' + d.boardings  + ' people');
       })
       .on("mouseout", function(d) {
         d3.select(this)
