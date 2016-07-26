@@ -1,7 +1,3 @@
-// var mapUtils = require( './mapUtils.js' );
-// import * as mapUtils from 'mapUtils';
-
-// var dataService = require( './dataService.js' );
 (function() {
   var width = 1000,
       height = 868;
@@ -83,70 +79,15 @@
       // add labels to neighborhoods
       addDistrictLabels( svg, path );
 
-    // Create the legend that shows boardings and alightings for each point
-    var stopInfo = svg.append("g")
-        .attr("class", "stopInfo")
-        .attr("transform", "translate(" + (width - 200) + ",300)")
-        .attr("class", "g-legend")
+    // Create the info box that shows boardings and alightings for each point
+    createStopInfo( svg, width );
 
-    stopInfo.append("rect")
-      .attr("transform", "translate(0,-100)")
-      .attr("width", 200)
-      .attr("height", 150)
-      .attr("fill", '#F5F5F5')
-      .attr("border",1)
-      .style("opacity", 0);
-
-    stopInfo.append("text")
-      .attr("class", "streetsText")
-      .attr("y", -40)
-      .attr("x", 8)
-
-    stopInfo.append("text")
-      .attr("class", "boardingsText")
-      .attr("y", -20)
-      .attr("x", 8)
-      .attr("fill", "white")
-      .style("font-weight", "bold")
-
-    stopInfo.append("text")
-      .attr("class", "alightingsText")
-      .attr("y", 0)
-      .attr("x", 8)
-      .attr("fill", "white")
-      .style("font-weight", "bold")
+    // Create the legend that explains what size & color of points on map mean
+    createBoardingsLegend( svg, width );
+   
   }
 
-// test!!!
-  var boardingsLegend = svg.append("g")
-      .attr("transform", "translate(" + (width - 200) + ",58)")
-      .attr("class", "g-legend");
-
-  boardingsLegend.append("text")
-      .attr("y", -16)
-      .attr("x", -100)
-      .style("font-weight", "bold")
-      .text("Average weekday boardings by bus stop");
-
-  var boardingsKey = boardingsLegend.selectAll(".g-key")
-    .data([{space: 90, boardings: 3000}, {space: 20, boardings: 2000}, {space: -50, boardings: 800}])
-    .enter().append("g")
-    .attr("class", "g-key");
-
-  boardingsKey.append("circle")
-      .attr("class", "g-homicide")
-      .attr("cx", function(d) { return d.space; })
-      .attr("cy", function(d) { return 3; })
-      .attr("r", setPointSize)
-      .attr("fill", setPointColor);
-
-  boardingsKey.append("text")
-      .attr("x", function(d) { return d.space - 20 })
-      .attr("dy", ".35em")
-      .attr("y", function(d) { return 30; })
-      .text(function(d) { return d.boardings + ' ppl'; });
-
-  })()
+})()
 
 
 
