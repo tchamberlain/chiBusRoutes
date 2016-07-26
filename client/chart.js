@@ -1,8 +1,5 @@
   
-
-// getRoutesOnStop();
 getStopsOnRoute();
-
 
 function getStopsOnRoute( error, chicago, blocks ){
   return $.ajax({
@@ -23,24 +20,6 @@ function getStopsOnRoute( error, chicago, blocks ){
   });
 }
 
-function getRoutesOnStop( error, chicago, blocks ){
-  return $.ajax({
-    url: 'http://localhost:8000/routes/stops',
-    type: 'GET',
-    contentType: 'application/json',
-    success: function (data) {
-      console.log('_----/routes/stops',data);
-      data.forEach(function(x){
-        x.count = x['COUNT(*)'];
-      });
-      makeChart( data.slice(data.length-30));
-    },
-    error: function (data) {
-      console.error('An error retrieving /routes/stops data occured');
-    }
-  });
-}
-
 
   function makeChart( dataset ){
     var w = 1000;
@@ -52,7 +31,7 @@ function getRoutesOnStop( error, chicago, blocks ){
 
     var yScale = d3.scale.linear()
             .domain([0, d3.max(dataset, function(d) {return d.count;})])
-            .range([0, h]);
+            .range([h, 0]);
 
     var yAxis = d3.svg.axis()
                       .scale(yScale)
@@ -66,14 +45,13 @@ function getRoutesOnStop( error, chicago, blocks ){
     //Create SVG element
     var svg = d3.select("body")
           .append("svg")
-          // .attr("transform", "translate(" + 100 + ",100)")
           .attr("width", w)
           .attr("height", h);
 
     //Create Y axis
     svg.append("g")
         .attr("class", "axis")
-        .attr("transform", "translate(" + 975 + ",0)")
+        .attr("transform", "translate(" + 970 + ",2)")
         .call(yAxis);
 
     //Create bars
@@ -85,11 +63,11 @@ function getRoutesOnStop( error, chicago, blocks ){
         return xScale(i);
        })
        .attr("y", function(d) {
-        return h - yScale(d.count);
+        return yScale(d.count);
        })
        .attr("width", xScale.rangeBand())
        .attr("height", function(d) {
-        return yScale(d.count);
+        return (yScale(0) - yScale(d.count));
        })
        .attr("fill", function(d) {
         return "rgb(0, 0, " + (d.count * 10) + ")";

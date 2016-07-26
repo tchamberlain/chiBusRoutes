@@ -36,7 +36,6 @@
       type: 'GET',
       contentType: 'application/json',
       success: function (data) {
-        console.log(data);
        ready( error, chicago, blocks, data )
       },
       error: function (data) {
